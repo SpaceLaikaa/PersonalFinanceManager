@@ -6,6 +6,10 @@ public class BudgetManager {
     private double totalMoney;
     private List<Transaction> transactions = new ArrayList<>();
 
+    public BudgetManager(double totalMoney) {
+        this.totalMoney = totalMoney;
+    }
+
     public double getTotalMoney() {return totalMoney;}
     public List<Transaction> getTransactions() {return transactions;}
 
@@ -32,9 +36,16 @@ public class BudgetManager {
         try(ObjectInputStream in = new ObjectInputStream(new FileInputStream("transaction.ser"))){
             transactions = (List<Transaction>) in.readObject();
         } catch (IOException e){
-            System.out.println("File error while saving: "+e.getMessage());
+            System.out.println("File error while loading: "+e.getMessage());
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public void showExpenses() {
+        System.out.println("\n--- Expenses ---");
+        for (Transaction t : transactions) {
+            System.out.println(t.getNote() + " | " + t.getAmount() + " TL | Secret note: " + t.getSecretNote());
         }
     }
 }
