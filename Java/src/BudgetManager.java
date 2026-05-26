@@ -27,6 +27,7 @@ public class BudgetManager {
     public void saveData(){
         try(ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("transaction.ser"))){
             out.writeObject(transactions);
+            out.writeObject(totalMoney);
         } catch (IOException e){
             System.out.println("File error while saving: "+e.getMessage());
         }
@@ -35,6 +36,7 @@ public class BudgetManager {
     public void loadData(){
         try(ObjectInputStream in = new ObjectInputStream(new FileInputStream("transaction.ser"))){
             transactions = (List<Transaction>) in.readObject();
+            totalMoney = in.readDouble();
         } catch (IOException e){
             System.out.println("File error while loading: "+e.getMessage());
         } catch (ClassNotFoundException e) {
@@ -47,5 +49,13 @@ public class BudgetManager {
         for (Transaction t : transactions) {
             System.out.println(t.getNote() + " | " + t.getAmount() + " TL | Secret note: " + t.getSecretNote());
         }
+    }
+
+    public void addIncome(Transaction transaction) {
+        if (transaction == null || transaction.getAmount() <= 0) {
+            throw new IllegalArgumentException("Amount should be more than 0 (addIncome)");
+        }
+        totalMoney += transaction.getAmount();
+        transactions.add(transaction);
     }
 }
